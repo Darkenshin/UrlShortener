@@ -17,6 +17,11 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>( errorMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AlgorithmException.class)
+    public ResponseEntity<ErrorMessage> resourceNotFoundException(AlgorithmException ex, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), request.getContextPath());
+        return new ResponseEntity<>( errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), request.getContextPath());

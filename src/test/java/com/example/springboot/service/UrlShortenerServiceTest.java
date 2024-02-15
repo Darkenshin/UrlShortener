@@ -1,9 +1,8 @@
-package com.example.springboot;
+package com.example.springboot.service;
 
 import com.example.springboot.exception.ResourceNotFoundException;
 import com.example.springboot.model.UrlMapping;
 import com.example.springboot.repository.UrlMappingRepository;
-import com.example.springboot.service.UrlShortenerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

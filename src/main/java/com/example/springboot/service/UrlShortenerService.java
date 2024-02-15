@@ -1,6 +1,6 @@
 package com.example.springboot.service;
 
-import com.example.springboot.UrlShortenerApplication;
+import com.example.springboot.exception.AlgorithmException;
 import com.example.springboot.exception.ResourceNotFoundException;
 import com.example.springboot.model.UrlMapping;
 import com.example.springboot.repository.UrlMappingRepository;
@@ -21,19 +21,19 @@ public class UrlShortenerService {
         this.urlMappingRepository = urlMappingRepository;
     }
 
-    public String generateShortUrl(String fullUrl) throws Exception {
+    protected String generateShortUrl(String fullUrl) throws AlgorithmException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(fullUrl.getBytes());
             String base64Hash = Base64.getEncoder().encodeToString(hash);
             return base64Hash.substring(0, 10);
         } catch (NoSuchAlgorithmException e) {
-            logger.error("Error encryption of : "+fullUrl);
-            throw new Exception("Internal Error");
+            logger.error("Error encryption of :{}",fullUrl);
+            throw new AlgorithmException("Internal Error");
         }
     }
 
-    public String shortenUrl(String fullUrl) throws Exception {
+    public String shortenUrl(String fullUrl) throws AlgorithmException {
 
         UrlMapping existingMapping = urlMappingRepository.findByFullUrl(fullUrl);
         if (existingMapping != null) {

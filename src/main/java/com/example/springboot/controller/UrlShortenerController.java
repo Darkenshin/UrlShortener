@@ -1,5 +1,6 @@
 package com.example.springboot.controller;
 
+import com.example.springboot.exception.AlgorithmException;
 import com.example.springboot.exception.ResourceNotFoundException;
 import com.example.springboot.service.UrlShortenerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class UrlShortenerController {
     private UrlShortenerService urlShortenerService;
 
     @PostMapping("/shorten")
-    public ResponseEntity<String> shortenUrl(@RequestBody String fullUrl) throws Exception {
+    public ResponseEntity<String> shortenUrl(@RequestBody String fullUrl) throws AlgorithmException{
         return new ResponseEntity<>(urlShortenerService.shortenUrl(fullUrl),HttpStatus.OK);
     }
 
