@@ -1,5 +1,6 @@
 package com.example.springboot;
 
+import com.example.springboot.exception.ResourceNotFoundException;
 import com.example.springboot.model.UrlMapping;
 import com.example.springboot.repository.UrlMappingRepository;
 import com.example.springboot.service.UrlShortenerService;
@@ -8,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class UrlShortenerServiceTest {
@@ -26,35 +27,35 @@ class UrlShortenerServiceTest {
     }
 
     @Test
-    void shorten_NewUrl_ShouldReturnShortUrl() {
+    void shorten_NewUrl_ShouldReturnShortUrl() throws Exception {
         // Given
         String fullUrl = "https://www.example.com";
-        String expectedShortUrl = "abc123";
-        when(urlMappingRepository.findByShortUrl(expectedShortUrl)).thenReturn(null);
+        String expectedShortUrl = urlShortenerService.generateShortUrl(fullUrl);
+        when(urlMappingRepository.findByFullUrl(fullUrl)).thenReturn(null);
 
         // When
         String actualShortUrl = urlShortenerService.shortenUrl(fullUrl);
 
         // Then
-       // Todo assertEquals(expectedShortUrl, actualShortUrl);
+        assertEquals(expectedShortUrl, actualShortUrl);
     }
 
     @Test
-    void shorten_ExistingUrl_ShouldReturnExistingShortUrl() {
+    void shorten_ExistingUrl_ShouldReturnExistingShortUrl() throws Exception {
         // Given
         String fullUrl = "https://www.example.com";
         String existingShortUrl = "abc123";
-        when(urlMappingRepository.findByShortUrl(existingShortUrl)).thenReturn(new UrlMapping(existingShortUrl, fullUrl));
+        when(urlMappingRepository.findByFullUrl(fullUrl)).thenReturn(new UrlMapping(existingShortUrl, fullUrl));
 
         // When
         String actualShortUrl = urlShortenerService.shortenUrl(fullUrl);
 
         // Then
-//        assertEquals(existingShortUrl, actualShortUrl);
+        assertEquals(existingShortUrl, actualShortUrl);
     }
 
     @Test
-    void getFullUrl_ExistingShortUrl_ShouldReturnFullUrl() {
+    void getFullUrl_ExistingShortUrl_ShouldReturnFullUrl() throws ResourceNotFoundException {
         // Given
         String shortUrl = "abc123";
         String expectedFullUrl = "https://www.example.com";
@@ -68,14 +69,21 @@ class UrlShortenerServiceTest {
     }
 
     @Test
-    void getFullUrl_NonExistingShortUrl_ShouldReturnNull() {
+    void getFullUrl_NonExistingShortUrl_ShouldThrowException() {
         // Given
         String shortUrl = "nonexisting";
 
         // When
-        String actualFullUrl = urlShortenerService.getFullUrl(shortUrl);
-
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> urlShortenerService.getFullUrl(shortUrl));
         // Then
-        assertEquals(null, actualFullUrl);
+        String expectedMessage = "Not found";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+
+
+
+
     }
 }

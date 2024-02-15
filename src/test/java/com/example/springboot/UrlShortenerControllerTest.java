@@ -1,6 +1,6 @@
 package com.example.springboot;
 
-import com.example.springboot.controler.UrlShortenerController;
+import com.example.springboot.controller.UrlShortenerController;
 import com.example.springboot.service.UrlShortenerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class UrlShortenerControllerTest {
 		when(urlShortenerService.shortenUrl(anyString())).thenReturn(shortUrl);
 
 		// When/Then
-		mockMvc.perform(post("/api/url/shorten")
+		mockMvc.perform(post("/url/shorten")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(fullUrl))
 				.andExpect(status().isOk())
@@ -54,7 +54,7 @@ class UrlShortenerControllerTest {
 		when(urlShortenerService.getFullUrl(shortUrl)).thenReturn(fullUrl);
 
 		// When/Then
-		mockMvc.perform(get("/api/url/{shortUrl}", shortUrl))
+		mockMvc.perform(get("/url/{shortUrl}", shortUrl))
 				.andExpect(status().isOk())
 				.andExpect(content().string(fullUrl));
 	}
