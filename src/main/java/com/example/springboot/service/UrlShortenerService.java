@@ -28,7 +28,7 @@ public class UrlShortenerService {
             String base64Hash = Base64.getEncoder().encodeToString(hash);
             return base64Hash.substring(0, 10);
         } catch (NoSuchAlgorithmException e) {
-            logger.error("Error encryption of :{}",fullUrl);
+            logger.error("Error encryption of :{} ", fullUrl);
             throw new AlgorithmException("Internal Error");
         }
     }
@@ -37,7 +37,7 @@ public class UrlShortenerService {
 
         UrlMapping existingMapping = urlMappingRepository.findByFullUrl(fullUrl);
         if (existingMapping != null) {
-            logger.trace(fullUrl+" already exist");
+            logger.trace(fullUrl, " already exist");
             return existingMapping.getShortUrl();
         } else {
             UrlMapping newMapping = new UrlMapping(generateShortUrl(fullUrl), fullUrl);
@@ -51,7 +51,7 @@ public class UrlShortenerService {
         if (mapping != null) {
             return mapping.getFullUrl();
         } else {
-            throw new ResourceNotFoundException(shortUrl+": Not found");
+            throw new ResourceNotFoundException(shortUrl +": Not found");
         }
     }
 }
