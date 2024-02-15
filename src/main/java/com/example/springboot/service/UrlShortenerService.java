@@ -1,8 +1,11 @@
 package com.example.springboot.service;
 
+import com.example.springboot.UrlShortenerApplication;
 import com.example.springboot.exception.ResourceNotFoundException;
 import com.example.springboot.model.UrlMapping;
 import com.example.springboot.repository.UrlMappingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -11,7 +14,7 @@ import java.util.Base64;
 
 @Service
 public class UrlShortenerService {
-
+    Logger logger = LoggerFactory.getLogger(UrlShortenerService.class);
     private final UrlMappingRepository urlMappingRepository;
 
     public UrlShortenerService(UrlMappingRepository urlMappingRepository) {
@@ -25,7 +28,7 @@ public class UrlShortenerService {
             String base64Hash = Base64.getEncoder().encodeToString(hash);
             return base64Hash.substring(0, 10);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error("Error encryption of : "+fullUrl);
             throw new Exception("Internal Error");
         }
     }
@@ -34,6 +37,7 @@ public class UrlShortenerService {
 
         UrlMapping existingMapping = urlMappingRepository.findByFullUrl(fullUrl);
         if (existingMapping != null) {
+            logger.trace(fullUrl+" already exist");
             return existingMapping.getShortUrl();
         } else {
             UrlMapping newMapping = new UrlMapping(generateShortUrl(fullUrl), fullUrl);
