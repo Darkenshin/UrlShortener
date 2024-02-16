@@ -22,8 +22,8 @@ public class UrlShortenerController {
         return new ResponseEntity<>(urlShortenerService.shortenUrl(fullUrl),HttpStatus.OK);
     }
 
-    @GetMapping("/{shortUrl}")
-    public ResponseEntity<String> getFullUrl(@PathVariable String shortUrl) throws ResourceNotFoundException {
+    @PostMapping("/short-url")
+    public ResponseEntity<String> getFullUrl(@RequestBody String shortUrl) throws ResourceNotFoundException {
         return new ResponseEntity<>(urlShortenerService.getFullUrl(shortUrl), HttpStatus.OK);
     }
 }
